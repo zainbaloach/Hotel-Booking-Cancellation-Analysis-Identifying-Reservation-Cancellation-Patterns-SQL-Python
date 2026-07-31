@@ -8,9 +8,9 @@ Analyzing hotel booking data to identify reservation cancellation patterns, cust
 
 ## Live Report
 
-**GitHub Pages:**
+**Executive Report:**
 
-(Add GitHub Pages Report Link Here)
+https://zainbaloach.github.io/Hotel-Booking-Cancellation-Analysis-Identifying-Reservation-Cancellation-Patterns-SQL-Python/
 
 ---
 
