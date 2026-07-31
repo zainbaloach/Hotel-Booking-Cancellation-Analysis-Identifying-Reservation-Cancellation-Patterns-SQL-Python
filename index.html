@@ -1,0 +1,1666 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>SQL Hotel Booking Cancellation Analysis | Executive Business Intelligence</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+<style>
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+scroll-behavior:smooth;
+}
+
+:root{
+
+--primary:#37b6ff;
+--secondary:#78d8ff;
+--accent:#15d6c4;
+--glass:rgba(255,255,255,.06);
+--border:rgba(255,255,255,.08);
+--bg:#09111d;
+
+}
+
+body{
+
+font-family:'Poppins',sans-serif;
+background:var(--bg);
+color:#fff;
+overflow-x:hidden;
+
+}
+
+/*===========================
+Animated Background
+===========================*/
+
+body::before{
+
+content:"";
+position:fixed;
+width:850px;
+height:850px;
+background:#1489ff;
+border-radius:50%;
+filter:blur(190px);
+top:-320px;
+left:-260px;
+opacity:.20;
+animation:bgMove1 18s ease-in-out infinite alternate;
+z-index:-3;
+
+}
+
+body::after{
+
+content:"";
+position:fixed;
+width:760px;
+height:760px;
+background:#17c8c2;
+border-radius:50%;
+filter:blur(190px);
+bottom:-260px;
+right:-230px;
+opacity:.18;
+animation:bgMove2 20s ease-in-out infinite alternate;
+z-index:-3;
+
+}
+
+@keyframes bgMove1{
+
+from{
+
+transform:translate(0,0);
+
+}
+
+to{
+
+transform:translate(170px,120px);
+
+}
+
+}
+
+@keyframes bgMove2{
+
+from{
+
+transform:translate(0,0);
+
+}
+
+to{
+
+transform:translate(-160px,-140px);
+
+}
+
+}
+
+/*===========================
+Scroll Progress
+===========================*/
+
+.progress{
+
+position:fixed;
+top:0;
+left:0;
+height:5px;
+width:0%;
+
+background:linear-gradient(90deg,#17c8c2,#37b6ff,#74ddff);
+
+z-index:5000;
+
+box-shadow:0 0 20px rgba(55,182,255,.8);
+
+}
+
+/*===========================
+Navigation
+===========================*/
+
+nav{
+
+position:fixed;
+
+top:0;
+left:0;
+width:100%;
+
+padding:22px 9%;
+
+display:flex;
+
+justify-content:space-between;
+align-items:center;
+
+background:rgba(12,18,28,.62);
+
+backdrop-filter:blur(20px);
+
+border-bottom:1px solid rgba(255,255,255,.08);
+
+z-index:999;
+
+}
+
+.logo{
+
+font-size:29px;
+font-weight:800;
+
+}
+
+.logo span{
+
+color:var(--secondary);
+
+}
+
+nav ul{
+
+display:flex;
+gap:40px;
+list-style:none;
+
+}
+
+nav ul a{
+
+color:#fff;
+text-decoration:none;
+font-weight:500;
+transition:.35s;
+
+}
+
+nav ul a:hover{
+
+color:var(--secondary);
+
+}
+
+/*===========================
+Hero
+===========================*/
+
+.hero{
+
+padding:175px 9% 90px;
+
+display:grid;
+
+grid-template-columns:1.15fr .85fr;
+
+gap:70px;
+
+align-items:center;
+
+}
+
+.badge{
+
+display:inline-flex;
+
+align-items:center;
+
+gap:10px;
+
+padding:12px 22px;
+
+background:rgba(55,182,255,.14);
+
+border:1px solid rgba(255,255,255,.08);
+
+border-radius:60px;
+
+font-size:14px;
+
+color:#bde8ff;
+
+margin-bottom:28px;
+
+}
+
+.hero h1{
+
+font-size:60px;
+
+font-weight:800;
+
+line-height:1.08;
+
+margin-bottom:28px;
+
+}
+
+.hero h1 span{
+
+background:linear-gradient(90deg,#8be8ff,#2cb5ff);
+
+-webkit-background-clip:text;
+
+-webkit-text-fill-color:transparent;
+
+}
+
+.hero p{
+
+font-size:18px;
+
+line-height:1.95;
+
+color:#d7dfe8;
+
+max-width:760px;
+
+margin-bottom:42px;
+
+}
+
+.buttons{
+
+display:flex;
+gap:20px;
+flex-wrap:wrap;
+
+}
+
+.btn{
+
+display:inline-flex;
+
+align-items:center;
+justify-content:center;
+
+padding:18px 34px;
+
+border-radius:16px;
+
+text-decoration:none;
+
+font-weight:600;
+
+background:linear-gradient(135deg,#37b6ff,#18d5c4);
+
+color:#081018;
+
+position:relative;
+
+overflow:hidden;
+
+transition:.4s;
+
+box-shadow:0 18px 40px rgba(55,182,255,.28);
+
+}
+
+.btn::before{
+
+content:"";
+
+position:absolute;
+
+top:0;
+left:-120%;
+
+width:70%;
+height:100%;
+
+background:rgba(255,255,255,.35);
+
+transform:skewX(-25deg);
+
+transition:.8s;
+
+}
+
+.btn:hover::before{
+
+left:150%;
+
+}
+
+.btn:hover{
+
+transform:translateY(-6px);
+
+}
+
+/*===========================
+Executive Glass Card
+===========================*/
+
+.preview{
+
+background:rgba(255,255,255,.05);
+
+border:1px solid rgba(255,255,255,.08);
+
+backdrop-filter:blur(24px);
+
+border-radius:32px;
+
+padding:34px;
+
+box-shadow:0 25px 60px rgba(0,0,0,.35);
+
+position:relative;
+
+overflow:hidden;
+
+}
+
+.preview::before{
+
+content:"";
+
+position:absolute;
+
+width:220px;
+height:220px;
+
+background:#37b6ff;
+
+filter:blur(110px);
+
+opacity:.18;
+
+top:-80px;
+right:-70px;
+
+}
+
+.status{
+
+display:inline-block;
+
+padding:8px 18px;
+
+border-radius:40px;
+
+background:#16a34a;
+
+font-size:13px;
+
+font-weight:600;
+
+margin-bottom:24px;
+
+}
+
+.preview h3{
+
+font-size:24px;
+
+margin-bottom:25px;
+
+}
+
+.preview-box{
+
+height:310px;
+
+display:flex;
+
+justify-content:center;
+
+align-items:center;
+
+border-radius:24px;
+
+background:linear-gradient(180deg,#122033,#09131f);
+
+}
+
+/* Animated Hotel SVG */
+
+.hotel-svg{
+
+width:220px;
+
+animation:floatHotel 5s ease-in-out infinite;
+
+filter:drop-shadow(0 0 25px rgba(55,182,255,.35));
+
+}
+
+@keyframes floatHotel{
+
+0%{transform:translateY(0px);}
+50%{transform:translateY(-12px);}
+100%{transform:translateY(0px);}
+
+}
+
+/*===========================
+KPI Cards
+===========================*/
+
+.kpis{
+
+padding:20px 9% 90px;
+
+display:grid;
+
+grid-template-columns:repeat(auto-fit,minmax(230px,1fr));
+
+gap:28px;
+
+}
+
+.kpi{
+
+background:rgba(255,255,255,.05);
+
+border:1px solid rgba(255,255,255,.08);
+
+backdrop-filter:blur(18px);
+
+border-radius:24px;
+
+padding:30px;
+
+transition:.35s;
+
+}
+
+.kpi:hover{
+
+transform:translateY(-8px);
+
+box-shadow:0 20px 45px rgba(0,0,0,.35);
+
+}
+
+.kpi h2{
+
+font-size:42px;
+
+color:#7ee3ff;
+
+margin-bottom:12px;
+
+}
+
+.kpi p{
+
+color:#d8e0e8;
+
+font-size:16px;
+
+line-height:1.7;
+
+}
+
+/*===========================
+Sections
+===========================*/
+
+section{
+
+padding:90px 9%;
+
+}
+
+.section-title{
+
+font-size:44px;
+
+font-weight:700;
+
+margin-bottom:24px;
+
+}
+
+.section-title span{
+
+color:#7ddfff;
+
+}
+
+.section-text{
+
+font-size:18px;
+
+line-height:2;
+
+color:#d7dee7;
+
+max-width:1100px;
+
+}
+/*===========================
+Premium Feature Cards
+===========================*/
+
+.features{
+
+display:grid;
+
+grid-template-columns:repeat(auto-fit,minmax(300px,1fr));
+
+gap:30px;
+
+margin-top:55px;
+
+}
+
+.feature{
+
+position:relative;
+
+background:rgba(255,255,255,.05);
+
+border:1px solid rgba(255,255,255,.08);
+
+backdrop-filter:blur(18px);
+
+border-radius:28px;
+
+padding:34px;
+
+overflow:hidden;
+
+transition:.45s;
+
+}
+
+.feature::before{
+
+content:"";
+
+position:absolute;
+
+top:-120px;
+
+right:-120px;
+
+width:220px;
+
+height:220px;
+
+background:linear-gradient(135deg,#37b6ff,#18d6c4);
+
+filter:blur(80px);
+
+opacity:.18;
+
+transition:.45s;
+
+}
+
+.feature:hover{
+
+transform:translateY(-10px);
+
+box-shadow:0 28px 60px rgba(0,0,0,.40);
+
+}
+
+.feature:hover::before{
+
+opacity:.32;
+
+}
+
+.feature h3{
+
+font-size:23px;
+
+margin-bottom:18px;
+
+color:#8ce6ff;
+
+}
+
+.feature p{
+
+line-height:1.95;
+
+color:#d7dee7;
+
+}
+
+/*===========================
+Wave Divider
+===========================*/
+
+.wave{
+
+margin-top:-2px;
+
+line-height:0;
+
+}
+
+.wave svg{
+
+display:block;
+
+width:100%;
+
+height:90px;
+
+}
+
+/*===========================
+Responsive
+===========================*/
+
+@media(max-width:1100px){
+
+.hero{
+
+grid-template-columns:1fr;
+
+}
+
+.preview{
+
+order:-1;
+
+}
+
+.hero h1{
+
+font-size:48px;
+
+}
+
+}
+
+@media(max-width:768px){
+
+nav ul{
+
+display:none;
+
+}
+
+.hero{
+
+padding:150px 6% 70px;
+
+}
+
+.kpis{
+
+padding:20px 6% 70px;
+
+}
+
+section{
+
+padding:75px 6%;
+
+}
+
+.hero h1{
+
+font-size:38px;
+
+}
+
+.section-title{
+
+font-size:34px;
+
+}
+
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="progress" id="progress"></div>
+
+<nav>
+
+<div class="logo">
+
+SQL <span>Analytics</span>
+
+</div>
+
+<ul>
+
+<li><a href="#overview">Overview</a></li>
+
+<li><a href="#highlights">Highlights</a></li>
+
+<li><a href="#technology">Technology</a></li>
+
+<li><a href="#report">Report</a></li>
+
+</ul>
+
+</nav>
+
+<section class="hero">
+
+<div>
+
+<div class="badge">
+
+🏨 Executive Business Intelligence Project
+
+</div>
+
+<h1>
+
+SQL Hotel Booking <span>Cancellation Analysis</span>
+
+</h1>
+
+<p>
+
+A comprehensive end-to-end SQL and Python analytics project focused on understanding hotel reservation cancellation behavior through advanced SQL querying, exploratory data analysis, professional visualizations, and executive business reporting. The project uncovers booking trends, customer behavior, pricing patterns, hotel performance, and revenue risks to support data-driven decision making.
+
+</p>
+
+<div class="buttons">
+
+<a href="Report/Report.html" class="btn">
+
+📄 View Executive Report
+
+</a>
+
+<a href="https://github.com/zainbaloach/SQL-Hotel-Bookings-Cancellation-Analysis"
+
+target="_blank"
+
+class="btn">
+
+💻 GitHub Repository
+
+</a>
+
+</div>
+
+</div>
+
+<div class="preview">
+
+<div class="status">
+
+LIVE PROJECT
+
+</div>
+
+<h3>
+
+Executive Business Report
+
+</h3>
+
+<div class="preview-box">
+
+<svg class="hotel-svg"
+
+viewBox="0 0 512 512"
+
+fill="none"
+
+xmlns="http://www.w3.org/2000/svg">
+
+<rect x="120"
+
+y="90"
+
+width="270"
+
+height="300"
+
+rx="12"
+
+fill="#37b6ff"/>
+
+<rect x="165"
+
+y="140"
+
+width="42"
+
+height="42"
+
+fill="#dff8ff"/>
+
+<rect x="240"
+
+y="140"
+
+width="42"
+
+height="42"
+
+fill="#dff8ff"/>
+
+<rect x="315"
+
+y="140"
+
+width="42"
+
+height="42"
+
+fill="#dff8ff"/>
+
+<rect x="165"
+
+y="215"
+
+width="42"
+
+height="42"
+
+fill="#dff8ff"/>
+
+<rect x="240"
+
+y="215"
+
+width="42"
+
+height="42"
+
+fill="#dff8ff"/>
+
+<rect x="315"
+
+y="215"
+
+width="42"
+
+height="42"
+
+fill="#dff8ff"/>
+
+<rect x="225"
+
+y="300"
+
+width="65"
+
+height="90"
+
+fill="#0b1725"/>
+
+<polygon
+
+points="105,90 255,25 405,90"
+
+fill="#74ddff"/>
+
+</svg>
+
+</div>
+
+</div>
+
+</section>
+
+<section class="kpis">
+
+<div class="kpi">
+
+<h2 data-target="74745">0</h2>
+
+<p>
+
+Successful Reservations
+
+</p>
+
+</div>
+
+<div class="kpi">
+
+<h2 data-target="44152">0</h2>
+
+<p>
+
+Cancelled Reservations
+
+</p>
+
+</div>
+
+<div class="kpi">
+
+<h2 data-target="41">0%</h2>
+
+<p>
+
+City Hotel Cancellation Rate
+
+</p>
+
+</div>
+
+<div class="kpi">
+
+<h2 data-target="70">0%</h2>
+
+<p>
+
+Cancellations from Portugal
+
+</p>
+
+</div>
+
+</section>
+
+<div class="wave">
+
+<svg xmlns="http://www.w3.org/2000/svg"
+
+viewBox="0 0 1440 320">
+
+<path fill="#101a27"
+
+fill-opacity="1"
+
+d="M0,160L60,176C120,192,240,224,360,218.7C480,213,600,171,720,165.3C840,160,960,192,1080,208C1200,224,1320,224,1380,224L1440,224L1440,320L0,320Z">
+
+</path>
+
+</svg>
+
+</div>
+
+<section id="overview">
+
+<h2 class="section-title">
+
+Project <span>Overview</span>
+
+</h2>
+
+<p class="section-text">
+
+The SQL Hotel Booking Cancellation Analysis project investigates the factors influencing reservation cancellations using SQL for data extraction and transformation, Python for visualization, and professional business reporting for executive communication. The analysis examines hotel types, booking channels, pricing behavior, seasonal demand, customer geography, and reservation outcomes to identify operational risks and revenue optimization opportunities.
+
+</p>
+
+</section>
+
+<section id="highlights">
+
+<h2 class="section-title">
+
+Project <span>Highlights</span>
+
+</h2>
+
+<div class="features">
+
+<div class="feature">
+
+<h3>🏨 Reservation Status Analysis</h3>
+
+<p>
+
+Analyzed 118,897 hotel reservations to evaluate successful bookings and cancellations. The project identified cancellation behavior across multiple business dimensions, helping reveal operational risks and opportunities for improving occupancy management.
+
+</p>
+
+</div>
+
+<div class="feature">
+
+<h3>📊 Hotel Performance Comparison</h3>
+
+<p>
+
+Compared City Hotels and Resort Hotels to understand differences in cancellation rates, pricing performance, and booking behavior. City Hotels recorded substantially higher cancellation rates, highlighting the need for targeted cancellation reduction strategies.
+
+</p>
+
+</div>
+
+<div class="feature">
+
+<h3>💰 ADR & Revenue Analysis</h3>
+
+<p>
+
+Explored Average Daily Rate (ADR) trends across hotel types and throughout the year. The analysis demonstrated that Resort Hotels consistently maintained stronger pricing power, while higher-priced reservations were also more likely to be cancelled.
+
+</p>
+
+</div>
+
+<div class="feature">
+
+<h3>📅 Seasonal Booking Trends</h3>
+
+<p>
+
+Investigated monthly booking patterns, identifying August as the strongest month for completed reservations and January as the highest-risk month for cancellations. These insights support demand forecasting and seasonal revenue planning.
+
+</p>
+
+</div>
+
+<div class="feature">
+
+<h3>🌍 Geographic Cancellation Insights</h3>
+
+<p>
+
+Examined customer countries contributing to cancelled reservations. Portugal represented approximately 70% of all cancellations, revealing a significant regional concentration that deserves further business investigation.
+
+</p>
+
+</div>
+
+<div class="feature">
+
+<h3>📈 Market Segment Analysis</h3>
+
+<p>
+
+Evaluated booking channels including Online Travel Agencies, Direct bookings, Groups, Corporate customers, and Offline Travel Agencies. Online Travel Agencies generated both the largest booking volume and the largest share of cancellations.
+
+</p>
+
+</div>
+
+</div>
+
+</section>
+
+<section id="technology">
+
+<h2 class="section-title">
+
+Tools & <span>Technologies</span>
+
+</h2>
+
+<div class="features">
+
+<div class="feature">
+
+<h3>🗄 SQL</h3>
+
+<p>
+
+Used to write analytical queries, perform aggregations, calculate KPIs, analyze booking behavior, compare hotel performance, and extract meaningful business insights from the dataset.
+
+</p>
+
+</div>
+
+<div class="feature">
+
+<h3>🐍 Python</h3>
+
+<p>
+
+Used for exploratory data analysis, data visualization, and creating professional charts that were later incorporated into the executive business report.
+
+</p>
+
+</div>
+
+<div class="feature">
+
+<h3>📓 Jupyter Notebook</h3>
+
+<p>
+
+Served as the primary environment for integrating SQL analysis, Python code, charts, and business interpretation into a structured analytical workflow.
+
+</p>
+
+</div>
+
+<div class="feature">
+
+<h3>📊 Data Visualization</h3>
+
+<p>
+
+Created multiple professional visualizations including reservation trends, ADR comparisons, market segment distributions, seasonal booking analysis, and cancellation patterns.
+
+</p>
+
+</div>
+
+<div class="feature">
+
+<h3>📄 Executive Business Report</h3>
+
+<p>
+
+Prepared a polished executive report summarizing methodology, analytical findings, key business insights, and strategic recommendations for hotel management.
+
+</p>
+
+</div>
+
+<div class="feature">
+
+<h3>🌐 GitHub Pages</h3>
+
+<p>
+
+Designed for online publishing through GitHub Pages, allowing recruiters, hiring managers, and portfolio visitors to explore the project through a professional web experience.
+
+</p>
+
+</div>
+
+</div>
+
+</section>
+
+<section>
+
+<h2 class="section-title">
+
+Business <span>Insights</span>
+
+</h2>
+
+<div class="features">
+
+<div class="feature">
+
+<h3>📉 Higher Cancellation Risk</h3>
+
+<p>
+
+City Hotels and Online Travel Agencies were identified as the primary contributors to reservation cancellations, indicating opportunities to improve cancellation policies and booking management strategies.
+
+</p>
+
+</div>
+
+<div class="feature">
+
+<h3>💲 Pricing Behaviour</h3>
+
+<p>
+
+Higher ADR reservations demonstrated a greater likelihood of cancellation, suggesting that premium-priced bookings require closer monitoring and targeted retention efforts.
+
+</p>
+
+</div>
+
+<div class="feature">
+
+<h3>📆 Seasonal Planning</h3>
+
+<p>
+
+Demand fluctuated considerably throughout the year, emphasizing the importance of seasonal forecasting, staffing optimization, and revenue management during peak and low-demand periods.
+
+</p>
+
+</div>
+
+<div class="feature">
+
+<h3>🎯 Strategic Recommendations</h3>
+
+<p>
+
+The analysis provides actionable recommendations including strengthening direct booking channels, reviewing OTA cancellation policies, optimizing pricing strategies, and improving occupancy forecasting.
+
+</p>
+
+</div>
+
+</div>
+
+</section>
+
+<section id="report">
+
+<h2 class="section-title">
+
+Executive <span>Report</span>
+
+</h2>
+
+<p class="section-text">
+
+Explore the complete executive business report featuring SQL-driven analytical findings, Python visualizations, hotel performance comparisons, booking behavior analysis, pricing insights, cancellation trends, and strategic recommendations designed to improve operational efficiency and revenue performance.
+
+</p>
+
+<br><br>
+
+<a href="Report/Report.html"
+
+class="btn">
+
+📄 Open Executive Report
+
+</a>
+
+</section>
+
+<footer>
+
+<h2>
+
+SQL Hotel Booking Cancellation Analysis
+
+</h2>
+
+<p>
+
+An end-to-end SQL and Python analytics project focused on understanding hotel reservation cancellation behavior through advanced SQL analysis, professional data visualization, and executive business reporting. The project demonstrates practical business intelligence, analytical storytelling, and data-driven decision-making.
+
+</p>
+
+<div class="footer-buttons">
+
+<a href="Report/Report.html">
+
+📄 Executive Report
+
+</a>
+
+<a href="https://github.com/zainbaloach/SQL-Hotel-Bookings-Cancellation-Analysis"
+
+target="_blank">
+
+💻 GitHub Repository
+
+</a>
+
+<a href="https://www.linkedin.com/in/zainb1/"
+
+target="_blank">
+
+🔗 LinkedIn
+
+</a>
+
+</div>
+
+<div class="copy">
+
+© 2026 Zain Ul Abideen • SQL Hotel Booking Cancellation Analysis • All Rights Reserved
+
+</div>
+
+</footer>
+
+<button id="topBtn" title="Back To Top">
+
+↑
+
+</button>
+
+<style>
+
+footer{
+
+padding:90px 9%;
+
+text-align:center;
+
+background:rgba(255,255,255,.03);
+
+border-top:1px solid rgba(255,255,255,.08);
+
+margin-top:80px;
+
+}
+
+footer h2{
+
+font-size:38px;
+
+margin-bottom:22px;
+
+}
+
+footer p{
+
+max-width:900px;
+
+margin:auto;
+
+line-height:2;
+
+color:#d7dee7;
+
+}
+
+.footer-buttons{
+
+display:flex;
+
+justify-content:center;
+
+flex-wrap:wrap;
+
+gap:20px;
+
+margin:45px 0;
+
+}
+
+.footer-buttons a{
+
+display:inline-flex;
+
+align-items:center;
+
+justify-content:center;
+
+padding:17px 34px;
+
+border-radius:16px;
+
+text-decoration:none;
+
+font-weight:600;
+
+background:linear-gradient(135deg,#37b6ff,#18d5c4);
+
+color:#081018;
+
+transition:.35s;
+
+box-shadow:0 18px 35px rgba(55,182,255,.30);
+
+}
+
+.footer-buttons a:hover{
+
+transform:translateY(-6px);
+
+box-shadow:0 25px 45px rgba(55,182,255,.45);
+
+}
+
+.copy{
+
+color:#9fb0bf;
+
+font-size:14px;
+
+margin-top:25px;
+
+}
+
+#topBtn{
+
+position:fixed;
+
+bottom:35px;
+
+right:35px;
+
+width:58px;
+
+height:58px;
+
+border:none;
+
+border-radius:50%;
+
+background:linear-gradient(135deg,#37b6ff,#18d5c4);
+
+font-size:24px;
+
+font-weight:700;
+
+cursor:pointer;
+
+display:none;
+
+color:#081018;
+
+box-shadow:0 15px 35px rgba(55,182,255,.40);
+
+transition:.35s;
+
+z-index:999;
+
+}
+
+#topBtn:hover{
+
+transform:translateY(-6px) scale(1.05);
+
+}
+
+.active{
+
+color:#8ce6ff !important;
+
+}
+
+</style>
+
+<script>
+
+/*=========================
+Scroll Progress Bar
+=========================*/
+
+const progress=document.getElementById("progress");
+
+window.addEventListener("scroll",()=>{
+
+const totalHeight=document.documentElement.scrollHeight-window.innerHeight;
+
+const progressHeight=(window.pageYOffset/totalHeight)*100;
+
+progress.style.width=progressHeight+"%";
+
+});
+
+/*=========================
+Scroll Reveal
+=========================*/
+
+const observer=new IntersectionObserver((entries)=>{
+
+entries.forEach(entry=>{
+
+if(entry.isIntersecting){
+
+entry.target.style.opacity="1";
+
+entry.target.style.transform="translateY(0)";
+
+}
+
+});
+
+},{threshold:.15});
+
+document.querySelectorAll(
+
+".feature,.preview,.kpi,.section-title,.section-text,.btn"
+
+).forEach(el=>{
+
+el.style.opacity="0";
+
+el.style.transform="translateY(40px)";
+
+el.style.transition="all .8s ease";
+
+observer.observe(el);
+
+});
+
+/*=========================
+Animated KPI Counter
+=========================*/
+
+const counters=document.querySelectorAll("[data-target]");
+
+const speed=180;
+
+counters.forEach(counter=>{
+
+const update=()=>{
+
+const target=+counter.getAttribute("data-target");
+
+const count=+counter.innerText.replace("%","");
+
+const increment=target/speed;
+
+if(count<target){
+
+counter.innerText=Math.ceil(count+increment);
+
+if(counter.parentElement.innerText.includes("%")){
+
+counter.innerText=Math.ceil(count+increment)+"%";
+
+}
+
+setTimeout(update,15);
+
+}else{
+
+if(counter.parentElement.innerText.includes("%")){
+
+counter.innerText=target+"%";
+
+}else{
+
+counter.innerText=target.toLocaleString();
+
+}
+
+}
+
+};
+
+update();
+
+});
+
+/*=========================
+Back To Top Button
+=========================*/
+
+const topBtn=document.getElementById("topBtn");
+
+window.addEventListener("scroll",()=>{
+
+if(document.documentElement.scrollTop>350){
+
+topBtn.style.display="block";
+
+}else{
+
+topBtn.style.display="none";
+
+}
+
+});
+
+topBtn.onclick=()=>{
+
+window.scrollTo({
+
+top:0,
+
+behavior:"smooth"
+
+});
+
+};
+
+/*=========================
+Navigation Highlight
+=========================*/
+
+const sections=document.querySelectorAll("section");
+
+const navLinks=document.querySelectorAll("nav ul li a");
+
+window.addEventListener("scroll",()=>{
+
+let current="";
+
+sections.forEach(section=>{
+
+const sectionTop=section.offsetTop-130;
+
+if(pageYOffset>=sectionTop){
+
+current=section.getAttribute("id");
+
+}
+
+});
+
+navLinks.forEach(link=>{
+
+link.classList.remove("active");
+
+if(link.getAttribute("href")==="#"+current){
+
+link.classList.add("active");
+
+}
+
+});
+
+});
+
+/*=========================
+Button Hover Animation
+=========================*/
+
+document.querySelectorAll(".btn,.footer-buttons a").forEach(button=>{
+
+button.addEventListener("mouseenter",()=>{
+
+button.style.transform="translateY(-5px) scale(1.03)";
+
+});
+
+button.addEventListener("mouseleave",()=>{
+
+button.style.transform="translateY(0) scale(1)";
+
+});
+
+});
+
+</script>
+
+</body>
+
+</html>
